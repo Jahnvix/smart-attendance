@@ -3,5 +3,4 @@ opencv-python-headless
 pandas
 numpy
 deepface
-tensorflow==2.15.0
 matplotlib
