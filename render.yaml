@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: smart-attendance
-    env: python
-    runtime: python-3.10.13   # 👈 ADD THIS LINE
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
