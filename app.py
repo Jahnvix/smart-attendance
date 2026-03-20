@@ -4,7 +4,7 @@ st.set_page_config(page_title="Smart Attendance", layout="wide")
 import cv2
 import pandas as pd
 import numpy as np
-from deepface import DeepFace
+from deepface.DeepFace import DeepFace
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
