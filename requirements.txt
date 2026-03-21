@@ -3,5 +3,4 @@ opencv-python-headless
 pandas
 numpy
 matplotlib
-deepface
-tensorflow-cpu
+face_recognition

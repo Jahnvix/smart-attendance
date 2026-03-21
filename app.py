@@ -5,6 +5,7 @@ import cv2
 import pandas as pd
 import numpy as np
 import deepFace
+from deepface import Deepface
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
