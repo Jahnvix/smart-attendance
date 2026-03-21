@@ -4,7 +4,7 @@ st.set_page_config(page_title="Smart Attendance", layout="wide")
 import cv2
 import pandas as pd
 import numpy as np
-from deepface.DeepFace import DeepFace
+import DeepFace
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
@@ -295,7 +295,7 @@ if uploaded_file is not None:
             st.image(frame, channels="BGR", width=250)
 
         try:
-            result = DeepFace.find(
+            result = deepface.DeepFace.find(
                 img_path=frame,
                 db_path="dataset",
                 model_name="Facenet",
@@ -318,7 +318,7 @@ if uploaded_file is not None:
         confidence = round((1 - distance) * 100, 2)
 
         try:
-            emotion = DeepFace.analyze(
+            emotion = deepface.DeepFace.analyze(
                 frame,
                 actions=['emotion'],
                 enforce_detection=False
