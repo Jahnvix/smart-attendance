@@ -1,4 +1,4 @@
 [server]
 headless = true
-port = 10000
+port = 7860
 enableCORS = false
