@@ -7,7 +7,8 @@ import numpy as np
 from datetime import datetime
 import os
 import matplotlib.pyplot as plt
-import face_recognition   # ✅ NEW (lightweight)
+from PIL import Image
+
 
 # ------------------ CARD STYLE ------------------
 st.markdown("""
@@ -51,34 +52,19 @@ TEACHER_PASSWORD = "admin123"
 st.markdown("<h1 style='text-align: center; color: gold;'>Smart Classroom System</h1>", unsafe_allow_html=True)
 
 # ------------------ FACE RECOGNITION ------------------
-def recognize_face(frame):
-    known_faces = []
-    known_names = []
-
+def recognize_face(uploaded_file):
     if not os.path.exists("dataset"):
         return "Unknown"
 
+    uploaded_img = Image.open(uploaded_file)
+
     for file in os.listdir("dataset"):
-        try:
-            img = face_recognition.load_image_file(f"dataset/{file}")
-            enc = face_recognition.face_encodings(img)
+        dataset_img = Image.open(f"dataset/{file}")
 
-            if len(enc) > 0:
-                known_faces.append(enc[0])
-                known_names.append(file.split(".")[0])
-        except:
-            continue
-
-    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    encodings = face_recognition.face_encodings(rgb)
-
-    if len(encodings) > 0:
-        matches = face_recognition.compare_faces(known_faces, encodings[0])
-        if True in matches:
-            return known_names[matches.index(True)]
+        if uploaded_img.size == dataset_img.size:
+            return file.split(".")[0]
 
     return "Unknown"
-
 # ------------------ FUNCTIONS ------------------
 
 def get_student_class(name):
