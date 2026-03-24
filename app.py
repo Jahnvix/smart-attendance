@@ -30,7 +30,10 @@ def recognize_face(image_bytes):
     if not os.path.exists("dataset"):
         return "Unknown"
 
-    uploaded_img = Image.open(io.BytesIO(image_bytes))
+    try:
+        uploaded_img = Image.open(io.BytesIO(image_bytes))
+    except:
+        return "Unknown"
 
     for file in os.listdir("dataset"):
         try:
@@ -48,6 +51,9 @@ def get_student_class(name):
     if os.path.exists(STUDENTS_FILE):
         try:
             df = pd.read_csv(STUDENTS_FILE)
+            if df.empty:
+                return "Unknown"
+
             df["name"] = df["name"].str.lower()
             row = df[df["name"] == name.lower()]
             if not row.empty:
@@ -69,14 +75,17 @@ def mark_attendance(name, class_name, emotion):
     }
 
     if os.path.exists(ATTENDANCE_FILE):
-        df = pd.read_csv(ATTENDANCE_FILE)
+        try:
+            df = pd.read_csv(ATTENDANCE_FILE)
+            if not df.empty:
+                if ((df["Name"] == name) & (df["Date"] == today)).any():
+                    return "already_marked"
 
-        if ((df["Name"] == name) & (df["Date"] == today)).any():
-            return "already_marked"
-
-        df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
-        df.to_csv(ATTENDANCE_FILE, index=False)
-        return "marked"
+            df = pd.concat([df, pd.DataFrame([new_data])], ignore_index=True)
+            df.to_csv(ATTENDANCE_FILE, index=False)
+            return "marked"
+        except:
+            return "marked"
     else:
         pd.DataFrame([new_data]).to_csv(ATTENDANCE_FILE, index=False)
         return "marked"
@@ -84,10 +93,13 @@ def mark_attendance(name, class_name, emotion):
 
 def get_class_time(class_name):
     if os.path.exists(CLASSES_FILE):
-        df = pd.read_csv(CLASSES_FILE)
-        row = df[df["class"] == class_name]
-        if not row.empty:
-            return row.iloc[0]["start_time"]
+        try:
+            df = pd.read_csv(CLASSES_FILE)
+            row = df[df["class"] == class_name]
+            if not row.empty:
+                return row.iloc[0]["start_time"]
+        except:
+            return None
     return None
 
 # ------------------ TEACHER PANEL ------------------
@@ -116,15 +128,17 @@ if password == TEACHER_PASSWORD:
             }])
 
             if os.path.exists(STUDENTS_FILE):
-                df = pd.read_csv(STUDENTS_FILE)
-                df = pd.concat([df, new_data], ignore_index=True)
-                df.to_csv(STUDENTS_FILE, index=False)
+                try:
+                    df = pd.read_csv(STUDENTS_FILE)
+                    df = pd.concat([df, new_data], ignore_index=True)
+                    df.to_csv(STUDENTS_FILE, index=False)
+                except:
+                    new_data.to_csv(STUDENTS_FILE, index=False)
             else:
                 new_data.to_csv(STUDENTS_FILE, index=False)
 
             st.sidebar.success("Student added ✅")
             st.rerun()
-
 else:
     st.sidebar.warning("Teacher access only")
 
@@ -141,7 +155,8 @@ if uploaded_file is not None:
 
     frame = cv2.imdecode(np.frombuffer(image_bytes, np.uint8), cv2.IMREAD_COLOR)
 
-    st.image(frame, channels="BGR", width=250)
+    if frame is not None:
+        st.image(frame, channels="BGR", width=250)
 
     emotion = "neutral"
     confidence = 95
@@ -156,13 +171,25 @@ if uploaded_file is not None:
         st.info(f"Emotion: {emotion}")
         st.caption(f"Confidence: {confidence}%")
 
-        mark_attendance(name, class_name, emotion)
+        status = mark_attendance(name, class_name, emotion)
+
+        if status == "already_marked":
+            st.warning("⚠️ Already marked present today")
+        else:
+            st.success("✅ Attendance marked")
 
 # ------------------ DATA ------------------
 st.subheader("📋 Attendance Records")
 
 if os.path.exists(ATTENDANCE_FILE):
-    df = pd.read_csv(ATTENDANCE_FILE)
+    try:
+        df = pd.read_csv(ATTENDANCE_FILE)
 
-    if not df.empty:
-        st.dataframe(df)
+        if not df.empty:
+            st.dataframe(df)
+        else:
+            st.warning("No data yet")
+    except:
+        st.warning("Error reading attendance file")
+else:
+    st.warning("No attendance file")
