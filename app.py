@@ -64,8 +64,8 @@ def save_csv(df: pd.DataFrame, path: str) -> None:
 
 def load_students() -> pd.DataFrame:
     df = safe_read_csv(STUDENTS_FILE, ["name", "class"])
-    df["name"] = df["name"].astype(str).str.strip().str.lower()
-    df["class"] = df["class"].astype(str).str.strip().str.upper()
+    df["name"] = df["name"].fillna("").astype(str).str.strip().str.lower()
+    df["class"] = df["class"].fillna("").astype(str).str.strip().str.upper()
     return df
 
 
@@ -76,10 +76,17 @@ def save_students(df: pd.DataFrame) -> None:
 def load_classes() -> list[str]:
     if os.path.exists(CLASSES_FILE):
         df = safe_read_csv(CLASSES_FILE, ["class"])
-        classes = df["class"].astype(str).str.strip().str.upper().tolist()
+        classes = (
+            df["class"]
+            .dropna()
+            .astype(str)
+            .str.strip()
+            .str.upper()
+            .tolist()
+        )
     else:
-        classes = load_students()["class"].tolist()
-    classes = [c for c in classes if c]
+        classes = load_students()["class"].dropna().astype(str).tolist()
+    classes = [c for c in classes if c and c.lower() != "nan"]
     return sorted(set(classes))
 
 
