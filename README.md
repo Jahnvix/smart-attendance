@@ -1,48 +1,46 @@
-# smart-attendance
-# 🎓 Smart Attendance System
+# Smart Attendance System
 
-A Machine Learning-based Smart Attendance System that uses Face Recognition and Emotion Detection to automate attendance and analyze student engagement.
-
----
-
-## 🚀 Features
-
-* 📸 Face Recognition Attendance
-* 😊 Emotion Detection (Happy, Sad, Neutral, etc.)
-* 👩‍🏫 Teacher Panel (Add Students & Classes)
-* ⏰ Class Timing & Late Entry Detection
-* 📊 Student Insights Dashboard
-* 📅 Date-wise Attendance Filtering
-* 📥 Download Attendance Reports
+A Streamlit app that records attendance from student images. It supports live webcam capture, optional real face recognition, and per-class attendance insights.
 
 ---
 
-## 🛠️ Tech Stack
+## Features
 
-* Python
-* Streamlit
-* OpenCV
-* DeepFace
-* Pandas & NumPy
-* Matplotlib
+- Webcam capture and image upload
+- Optional real face recognition (fallback matcher included)
+- Teacher panel to add or update students
+- Admin tools to delete students and reset attendance
+- Per-class attendance percentage dashboard
+- Per-class tabs, date filtering, and CSV export
+- Student insights and class mood charts
 
 ---
 
-## 📂 Project Structure
+## Tech Stack
+
+- Python
+- Streamlit
+- Pandas, NumPy
+- Pillow
+- Matplotlib
+
+---
+
+## Project Structure
 
 ```
 smart-attendance-system/
-│
-├── app.py
-├── dataset/          # student images
-├── data/             # csv files
-├── requirements.txt
-└── README.md
+|
+|-- app.py
+|-- dataset/          # student images
+|-- data/             # csv files
+|-- requirements.txt
+|-- README.md
 ```
 
 ---
 
-## ⚙️ Installation & Setup
+## Installation and Setup
 
 ### 1. Clone Repository
 
@@ -64,7 +62,15 @@ venv\Scripts\activate   (Windows)
 pip install -r requirements.txt
 ```
 
-### 4. Run Application
+### 4. (Optional) Enable Real Face Recognition
+
+```
+pip install face-recognition
+```
+
+Note: `face-recognition` may require C++ build tools on Windows.
+
+### 5. Run Application
 
 ```
 streamlit run app.py
@@ -72,47 +78,26 @@ streamlit run app.py
 
 ---
 
-## 🖥️ Usage
+## Configuration
 
-1. Login as Teacher
-2. Add Students with images
-3. Set class timings
-4. Upload student image to mark attendance
-5. View analytics and reports
+- `TEACHER_PASSWORD`: set this environment variable to change the teacher password. Default is `admin123`.
 
 ---
 
-## 📊 Output
+## Notes
 
-* Attendance records with date & time
-* Emotion analysis of students
-* Class mood visualization
-* Individual student insights
+- If `face-recognition` is not installed, the app uses a lightweight fallback matcher.
+- Emotion is currently stored as `neutral` (placeholder).
 
 ---
 
-## ⚠️ Notes
+## Future Enhancements
 
-* DeepFace requires high system resources
-* Recommended to run locally for full functionality
-
----
-
-## 🔮 Future Enhancements
-
-* Live webcam integration
-* Cloud deployment
-* Mobile support
-* AI-based performance tracking
+- Emotion detection integration
+- Cloud deployment or mobile support
 
 ---
 
-## 👩‍💻 Author
+## Author
 
 Jahnvi Gupta
-
----
-
-## ⭐ Acknowledgment
-
-This project is developed as part of academic learning to demonstrate real-world application of Machine Learning in education systems.
